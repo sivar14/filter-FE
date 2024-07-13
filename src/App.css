@@ -73,7 +73,7 @@ background-color: #ccc;
 }
 .modal{
   display: block;
-  position: fixed;
+  position: absolute;
   z-index: 1;
   left: 0;
   right: 0;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import './App.css'
+import "./App.css";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -9,35 +9,39 @@ function App() {
   const [userData, setUserData] = useState({ name: "", age: "", city: "" });
 
   const getAllUsers = async () => {
-    await axios.get("http://localhost:8000/users")
-      .then((res) => {
-        console.log(res.data)
-        setUsers(res.data);
-        setFilterusers(res.data);
-      });
+    await axios.get("http://localhost:8000/Getusers").then((res) => {
+      console.log(res.data);
+      setUsers(res.data);
+      setFilterusers(res.data);
+    });
   };
 
   useEffect(() => {
-
     getAllUsers();
-
   }, []);
 
   //Search function
 
   const handleSearchChange = (e) => {
     const searchText = e.target.value.toLowerCase();
-    const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchText) ||
-      user.city.toLowerCase().includes(searchText));
+    const filteredUsers = users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchText) ||
+        user.city.toLowerCase().includes(searchText) ||
+        user.age.toLowerCase().includes(searchText)
+    );
     setFilterusers(filteredUsers);
   };
 
   //delete user function
 
-  const handleDelit = async (id) => {
-    const isConfirmed = window.confirm("are you sure you want to delete this user?");
+  const handleDelete = async (id) => {
+    const isConfirmed = window.confirm(
+      "are you sure you want to delete this user?"
+    );
     if (isConfirmed) {
-      await axios.delete(`http://localhost:8000/users/${id}`)
+      await axios
+        .delete(`http://localhost:8000/Deleteusers/${id}`)
         .then((res) => {
           setUsers(res.data);
           setFilterusers(res.data);
@@ -56,51 +60,59 @@ function App() {
   const handleAddRecord = () => {
     setUserData({ name: "", age: "", city: "" });
     setIsModalOpen(true);
-
   };
 
   //handle data
   const handleData = (e) => {
     setUserData({
-      ...userData, [e.target.name]: e.target.value
+      ...userData,
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    console.log(userData.id);
+
     if (userData.id) {
-      await axios.put(`http://localhost:8000/users ${userData.id}`, userData)
+      console.log(userData);
+      await axios
+        .put(`http://localhost:8000/users/${userData.id}`, userData)
         .then((res) => {
           console.log(res);
         });
-
     } else {
-      await axios.post("http://localhost:8000/users", userData)
+      await axios
+        .post("http://localhost:8000/Addusers", userData)
         .then((res) => {
           console.log(res);
         });
     }
     closeModal();
     setUserData({ name: "", age: "", city: "" });
-
   };
 
   //update data
 
-  const handleUbdateRecord = (user) => {
+  const handleUpdateRecord = (user) => {
     setUserData(user);
     setIsModalOpen(true);
   };
-
 
   return (
     <>
       <div className="container">
         <h3>CRUD Application with react.js and node.js</h3>
         <div className="input-search">
-          <input type="search" placeholder="Search here"
-            onChange={handleSearchChange} />
-          <button className="btn green" onClick={handleAddRecord}>Add Rcord</button>
+          <input
+            type="search"
+            placeholder="Search here"
+            onChange={handleSearchChange}
+          />
+          <button className="btn green" onClick={handleAddRecord}>
+            Add Record
+          </button>
         </div>
         <table className="table">
           <thead>
@@ -114,22 +126,33 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers && filteredUsers.map((user, index) => {
-              return (
-                <tr key={user.id}>
-                  <td>{index + 1}</td>
-                  <td>{user.name}</td>
-                  <td>{user.age}</td>
-                  <td>{user.city}</td>
-                  <td>
-                    <button className="btn green" onClick={() => handleUbdateRecord(user)}>Edit</button>
-                  </td>
-                  <td>
-                    <button onClick={() => handleDelit(user.id)} className="btn red">Delete</button>
-                  </td>
-                </tr>
-              )
-            })}
+            {filteredUsers &&
+              filteredUsers.map((user, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{user.name}</td>
+                    <td>{user.age}</td>
+                    <td>{user.city}</td>
+                    <td>
+                      <button
+                        className="btn green"
+                        onClick={() => handleUpdateRecord(user)}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        className="btn red"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
         {isModalOpen && (
@@ -141,15 +164,33 @@ function App() {
               <h2>{userData.id ? "Update Record" : "Add Rcord"}</h2>
               <div className="input-group">
                 <label htmlFor="name">Full Name</label>
-                <input type="text" value={userData.name} name="name" id="name" onChange={handleData} />
+                <input
+                  type="text"
+                  value={userData.name}
+                  name="name"
+                  id="name"
+                  onChange={handleData}
+                />
               </div>
               <div className="input-group">
                 <label htmlFor="name">Age</label>
-                <input type="number" value={userData.age} name="age" id="age" onChange={handleData} />
+                <input
+                  type="number"
+                  value={userData.age}
+                  name="age"
+                  id="age"
+                  onChange={handleData}
+                />
               </div>
               <div className="input-group">
                 <label htmlFor="name">City</label>
-                <input type="text" value={userData.city} name="city" id="city" onChange={handleData} />
+                <input
+                  type="text"
+                  value={userData.city}
+                  name="city"
+                  id="city"
+                  onChange={handleData}
+                />
               </div>
               <button className="btn green" onClick={handleSubmit}>
                 {userData.id ? "Update User" : "Add User"}
@@ -159,7 +200,7 @@ function App() {
         )}
       </div>
     </>
-  )
-};
+  );
+}
 
 export default App;
