@@ -9,7 +9,7 @@ function App() {
   const [userData, setUserData] = useState({ name: "", age: "", city: "" });
 
   const getAllUsers = async () => {
-    await axios.get("http://localhost:8000/Getusers").then((res) => {
+    await axios.get("https://filter-be-htqp.onrender.com/Getusers").then((res) => {
       console.log(res.data);
       setUsers(res.data);
       setFilterusers(res.data);
@@ -41,7 +41,7 @@ function App() {
     );
     if (isConfirmed) {
       await axios
-        .delete(`http://localhost:8000/Deleteusers/${id}`)
+        .delete(`https://filter-be-htqp.onrender.com/Deleteusers/${id}`)
         .then((res) => {
           setUsers(res.data);
           setFilterusers(res.data);
@@ -78,13 +78,13 @@ function App() {
     if (userData.id) {
       console.log(userData);
       await axios
-        .put(`http://localhost:8000/users/${userData.id}`, userData)
+        .put(`https://filter-be-htqp.onrender.com/users/${userData.id}`, userData)
         .then((res) => {
           console.log(res);
         });
     } else {
       await axios
-        .post("http://localhost:8000/Addusers", userData)
+        .post("https://filter-be-htqp.onrender.com/Addusers", userData)
         .then((res) => {
           console.log(res);
         });
